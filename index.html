@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Hà Nguyễn - HD Game Center</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght=700&family=Quicksand:wght=500;700&display=swap" rel="stylesheet">
     
@@ -12,18 +12,25 @@
             margin: 0; padding: 0;
             background-color: #A8E6EF; 
             background-image: linear-gradient(135deg, #A8E6EF 0%, #76DAE9 100%);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;
-            font-family: 'Quicksand', sans-serif; overflow: hidden; position: relative;
+            /* Fix lỗi 100vh trên iOS bằng svh và cho phép cuộn dọc tự nhiên */
+            min-height: 100vh;
+            min-height: 100svh; 
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            font-family: 'Quicksand', sans-serif; 
+            overflow-x: hidden;
+            overflow-y: auto; 
+            position: relative;
+            padding: 20px 0; /* Khoảng trống đầu đuôi khi cuộn */
         }
         .container {
             text-align: center; z-index: 10; background: rgba(255, 255, 255, 0.65); 
             padding: 15px 12px; border-radius: 24px; backdrop-filter: blur(10px);
             box-shadow: 0 10px 35px rgba(0, 109, 119, 0.15); border: 1px solid rgba(255, 255, 255, 0.8);
-            width: 95%; max-width: 420px; margin: 5px; position: relative;
+            width: 95%; max-width: 420px; margin: auto; position: relative;
         }
         h1 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: #006D77; margin: 5px 0 8px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         
-        /* Khung Điều Khiển Nhạc HD Nâng Cấp (Ý tưởng 4) */
+        /* Khung Điều Khiển Nhạc */
         .music-panel {
             background: rgba(255, 255, 255, 0.85); border-radius: 16px; padding: 8px 10px;
             margin-bottom: 12px; border: 1px solid #76DAE9; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
@@ -77,9 +84,10 @@
         /* --- HD CANVAS GLOBAL STYLE --- */
         canvas { background: #ffffff; border: 4px solid #006D77; border-radius: 12px; display: block; margin: 0 auto; box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
         
-        .btn-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+        /* Thêm padding bottom chống lấp nút trên iPhone */
+        .btn-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; padding-bottom: 10px; }
         .action-btn {
-            background: #76DAE9; color: #006D77; border: none; padding: 10px 25px; font-size: 1.1rem;
+            background: #76DAE9; color: #006D77; border: none; padding: 12px 25px; font-size: 1.1rem;
             font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.08);
             width: 45%; -webkit-tap-highlight-color: transparent;
         }
@@ -100,8 +108,9 @@
 
     <div class="container">
         <button class="back-btn" id="backBtn" onclick="showMenu()">↩ QUAY LẠI MENU</button>
-        <h1 id="mainTitle">Yêu Cục Cưng Hà Nguyễn </h1>
+        <h1 id="mainTitle">Hà Nguyễn Game Center</h1>
         
+        <!-- Bảng điều khiển Nhạc -->
         <div class="music-panel">
             <div class="info-box" id="infoDisplay">🌷 Nhấn Bật Nhạc để nghe playlist ngẫu nhiên</div>
             <div class="music-controls">
@@ -111,6 +120,7 @@
             </div>
         </div>
 
+        <!-- ================= MENU CHÍNH ================= -->
         <div id="game-menu" class="game-screen active-screen">
             <button class="menu-btn" onclick="startMemoryGame()">
                 <span>🧩</span> <b>Trò chơi 1:</b> Lật Thẻ Tìm Cặp
@@ -123,11 +133,13 @@
             </button>
         </div>
 
+        <!-- ================= TRÒ CHƠI 1: LẬT THẺ ================= -->
         <div id="screen-memory" class="game-screen">
             <div id="memory-score" style="font-weight:bold; color:#006D77; margin-bottom:5px;">Cặp đã tìm: 0/6</div>
             <div id="memory-grid"></div>
         </div>
 
+        <!-- ================= TRÒ CHƠI 2: HỨNG VẬT PHẨM ================= -->
         <div id="screen-catch" class="game-screen">
             <div style="font-weight:bold; color:#006D77; margin-bottom:5px;" id="catchScore">Điểm số: 0/20</div>
             <canvas id="catchCanvas" style="width: 320px; height: 260px;"></canvas>
@@ -137,6 +149,7 @@
             </div>
         </div>
 
+        <!-- ================= TRÒ CHƠI 3: JUMP RUNNER ================= -->
         <div id="screen-jump" class="game-screen">
             <div style="font-weight:bold; color:#006D77; margin-bottom:5px;" id="jumpScore">Điểm số: 0/15</div>
             <canvas id="jumpCanvas" style="width: 320px; height: 180px;"></canvas>
@@ -156,7 +169,6 @@
         const backBtn = document.getElementById('backBtn');
         const mainTitle = document.getElementById('mainTitle');
 
-        // Danh sách 4 bài hát ngẫu nhiên
         const playlist = [
             { src: "duchomaivesau.mp3", title: "🎵 Dù Cho Mai Về Sau - Bùi Trường Linh" },
             { src: "giothi.mp3", title: "🎵 Giờ Thì - Đang phát" },
@@ -165,14 +177,15 @@
         ];
         let currentSongIndex = 0;
         let activeGameLoop = null;
-        let particles = []; // Mảng quản lý hạt bùng nổ (Ý tưởng 2)
+        let particles = []; 
 
-        // Hàm nâng cấp đồ họa Canvas chống răng cưa (HD Scaling Engine)
         function setupHDCanvas(canvas, width, height) {
             const ctx = canvas.getContext('2d');
             const dpr = window.devicePixelRatio || 1;
             canvas.width = width * dpr;
             canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
             ctx.scale(dpr, dpr);
             return ctx;
         }
@@ -212,11 +225,13 @@
             document.getElementById(screenId).classList.add('active-screen');
             mainTitle.innerText = titleText;
             backBtn.style.display = screenId === 'game-menu' ? 'none' : 'block';
+            
+            // Tự động cuộn nhẹ lên đầu trang khi đổi màn hình cho mượt
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function showMenu() { switchScreen('game-menu', 'Hà Nguyễn Game Center'); }
 
-        // Khởi tạo hạt bùng nổ trái tim (Ý tưởng 2)
         function spawnBurst(x, y) {
             for (let i = 0; i < 8; i++) {
                 particles.push({
@@ -229,7 +244,6 @@
             }
         }
 
-        // Vẽ các hạt bùng nổ lên màn hình canvas bất kỳ
         function drawParticles(context) {
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
@@ -298,14 +312,14 @@
             flippedCards = [];
         }
 
-        // ================= TRÒ CHƠI 2: HỨNG TIM & TULIP (ĐÃ NÂNG CẤP ĐỒ HỌA HD) =================
+        // ================= TRÒ CHƠI 2: HỨNG TIM & TULIP =================
         const catchCanvas = document.getElementById('catchCanvas');
         let catchCtx = catchCanvas.getContext('2d');
         let basketX, items, catchScore, isCatchGameOver;
 
         function startCatchGame() {
             switchScreen('screen-catch', '🧺 Hứng Tim & Tulip');
-            catchCtx = setupHDCanvas(catchCanvas, 320, 260); // Áp dụng bộ render HD mượt mà
+            catchCtx = setupHDCanvas(catchCanvas, 320, 260);
             basketX = 135; items = []; catchScore = 0; isCatchGameOver = false; particles = [];
             document.getElementById('catchScore').innerText = "Điểm số: 0/20";
             runCatchGame();
@@ -328,7 +342,6 @@
                 items.push({ x: Math.random() * 280 + 15, y: 0, type: type });
             }
 
-            // Giỏ hứng HD sắc nét
             catchCtx.fillStyle = '#006D77';
             catchCtx.fillRect(basketX, 235, 55, 20);
             catchCtx.fillStyle = '#ffffff';
@@ -346,13 +359,12 @@
                 catchCtx.textBaseline = 'middle';
                 catchCtx.fillText(it.type, it.x, it.y);
 
-                // Va chạm vật phẩm
                 if (it.y >= 225 && it.y <= 255 && it.x >= basketX - 10 && it.x <= basketX + 65) {
                     if (it.type === '🌧️') {
                         catchScore = Math.max(0, catchScore - 2);
                     } else {
                         catchScore++;
-                        spawnBurst(it.x, it.y); // Kích hoạt hiệu ứng bùng nổ tim cực đẹp (Ý tưởng 2)
+                        spawnBurst(it.x, it.y);
                     }
                     document.getElementById('catchScore').innerText = `Điểm số: ${catchScore}/20`;
                     items.splice(i, 1);
@@ -366,18 +378,18 @@
                 if (it.y > 260) items.splice(i, 1);
             }
 
-            drawParticles(catchCtx); // Render hiệu ứng nổ tim lãng mạn
+            drawParticles(catchCtx);
             if (!isCatchGameOver) activeGameLoop = requestAnimationFrame(runCatchGame);
         }
 
-        // ================= TRÒ CHƠI 3: JUMP RUNNER (ĐÃ NÂNG CẤP ĐỒ HỌA HD) =================
+        // ================= TRÒ CHƠI 3: JUMP RUNNER =================
         const jumpCanvas = document.getElementById('jumpCanvas');
         let jumpCtx = jumpCanvas.getContext('2d');
         let playerY, playerVelocity, obstacles, jumpScore, isJumpGameOver, jumpTimer;
 
         function startJumpGame() {
             switchScreen('screen-jump', '🏃‍♀️ Nhảy Né Vật Cản');
-            jumpCtx = setupHDCanvas(jumpCanvas, 320, 180); // Áp dụng bộ render HD mượt mà
+            jumpCtx = setupHDCanvas(jumpCanvas, 320, 180);
             playerY = 140; playerVelocity = 0; obstacles = []; jumpScore = 0; isJumpGameOver = false; jumpTimer = 0;
             document.getElementById('jumpScore').innerText = "Điểm số: 0/15";
             runJumpGame();
@@ -398,7 +410,6 @@
             playerVelocity += 0.55; 
             if (playerY >= 140) { playerY = 140; playerVelocity = 0; }
 
-            // Vẽ nhân vật HD hình khối cầu mượt mà chống nhòe
             jumpCtx.beginPath();
             jumpCtx.arc(35, playerY + 10, 10, 0, 2 * Math.PI);
             jumpCtx.fillStyle = '#76DAE9'; jumpCtx.fill();
@@ -438,7 +449,6 @@
             if (!isJumpGameOver) activeGameLoop = requestAnimationFrame(runJumpGame);
         }
 
-        // --- HIỆU ỨNG HOA TULIP TRẮNG NỀN ---
         function createTulips() {
             const body = document.body;
             for (let i = 0; i < 12; i++) {
