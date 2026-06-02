@@ -3,216 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hà Nguyễn - Mê Cung Tình Yêu</title>
+    <title>Hà Nguyễn - Game Center</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght=700&family=Quicksand:wght=500;700&display=swap" rel="stylesheet">
     
     <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: #A8E6EF; 
             background-image: linear-gradient(135deg, #A8E6EF 0%, #76DAE9 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-family: 'Quicksand', sans-serif;
-            overflow: hidden;
-            position: relative;
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;
+            font-family: 'Quicksand', sans-serif; overflow: hidden; position: relative;
         }
-
         .container {
-            text-align: center;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.5); 
-            padding: 15px 10px;
-            border-radius: 24px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 8px 32px 0 rgba(118, 218, 233, 0.3); 
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            width: 95%;
-            max-width: 440px;
-            margin: 5px;
+            text-align: center; z-index: 10; background: rgba(255, 255, 255, 0.6); 
+            padding: 20px 15px; border-radius: 24px; backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px 0 rgba(118, 218, 233, 0.3); border: 1px solid rgba(255, 255, 255, 0.7);
+            width: 95%; max-width: 440px; margin: 5px; position: relative;
         }
-
-        h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.2rem;
-            color: #006D77; 
-            margin: 5px 0;
-        }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 15px;
-            font-weight: 700;
-            color: #006D77;
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-        }
-
-        #maze-container {
-            position: relative;
-            background-color: #ffffff;
-            border: 4px solid #006D77;
-            border-radius: 12px;
-            margin: 0 auto;
-            overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-        }
-
-        canvas {
-            display: block;
-        }
-
-        /* Khung thông báo trạng thái bài hát (Đã bỏ Karaoke) */
+        h1 { font-family: 'Dancing Script', cursive; font-size: 2.3rem; color: #006D77; margin: 5px 0 15px 0; }
         .info-box {
-            margin: 10px auto;
-            min-height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #006D77;
-            padding: 5px 10px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px dashed #76DAE9;
-            text-align: center;
+            margin: 10px auto; min-height: 45px; display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: 700; color: #006D77; padding: 5px 10px; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.7); border: 1px dashed #76DAE9; text-align: center;
         }
-
         .music-btn {
-            padding: 10px 20px;
-            background-color: #006D77; 
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            box-shadow: 0 4px 10px rgba(0, 109, 119, 0.2);
-            -webkit-tap-highlight-color: transparent; 
+            padding: 10px 20px; background-color: #006D77; color: white; border: none; border-radius: 20px;
+            font-size: 0.9rem; cursor: pointer; font-weight: bold; width: 100%; box-shadow: 0 4px 10px rgba(0, 109, 119, 0.2);
+            -webkit-tap-highlight-color: transparent; margin-bottom: 10px;
+        }
+        .back-btn {
+            background: #ff758f; color: white; border: none; padding: 6px 12px; border-radius: 15px;
+            font-weight: bold; font-size: 0.8rem; cursor: pointer; display: none; margin: 0 auto 10px auto;
         }
 
-        .d-pad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-            width: 160px;
-            margin: 10px auto 0 auto;
+        /* --- MENU STYLE --- */
+        #game-menu { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .menu-btn {
+            background: #ffffff; color: #006D77; border: 2px solid #006D77; border-radius: 16px;
+            padding: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: left; display: flex; align-items: center; gap: 10px;
         }
+        .menu-btn:active { background: #006D77; color: white; }
+        .menu-btn span { font-size: 1.5rem; }
 
-        .ctrl-btn {
-            background-color: #76DAE9;
-            color: #006D77;
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 12px;
-            padding: 12px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-            -webkit-tap-highlight-color: transparent;
-        }
-        .ctrl-btn:active {
-            background-color: #006D77;
-            color: white;
-        }
-        .center-space {
-            visibility: hidden;
-        }
+        /* --- SCREEN MANAGEMENT --- */
+        .game-screen { display: none; width: 100%; }
+        .active-screen { display: block; }
 
-        /* 🌷 Thiết kế và hiệu ứng hoa Tulip Trắng bay 🌷 */
-        .tulip {
-            position: absolute;
-            font-size: 24px;
-            pointer-events: none;
-            opacity: 0;
-            z-index: 1;
+        /* --- GAME 1: MEMORY MATCH --- */
+        #memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px auto; max-width: 340px; }
+        .card {
+            aspect-ratio: 1; background: #006D77; border-radius: 10px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: transparent;
+            transition: transform 0.3s; transform-style: preserve-3d; border: 2px solid white;
         }
+        .card.flipped { background: #ffffff; color: #initial; transform: rotateY(180deg); }
+        .card.matched { background: #E8F8F5; visibility: hidden; }
 
-        .music-on .tulip {
-            animation: floatTulip 8s infinite linear;
+        /* --- GAME 2 & 3: CANVAS GAMES --- */
+        canvas { background: #ffffff; border: 4px solid #006D77; border-radius: 12px; display: block; margin: 0 auto; }
+        .btn-row { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+        .action-btn {
+            background: #76DAE9; color: #006D77; border: none; padding: 12px 25px; font-size: 1.2rem;
+            font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        .action-btn:active { background: #006D77; color: white; }
 
+        /* --- TULIP BACKGROUND EFFECT --- */
+        .tulip { position: absolute; font-size: 24px; pointer-events: none; opacity: 0; z-index: 1; }
+        .music-on .tulip { animation: floatTulip 8s infinite linear; }
         @keyframes floatTulip {
-            0% {
-                transform: translateY(-10vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.85;
-            }
-            90% {
-                opacity: 0.85;
-            }
-            100% {
-                transform: translateY(110vh) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.85; }
+            90% { opacity: 0.85; }
+            100% { transform: translateY(110vh) translateX(100px) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Mê Cung Tình Yêu</h1>
+        <button class="back-btn" id="backBtn" onclick="showMenu()">↩ QUAY LẠI MENU</button>
+        <h1 id="mainTitle">Hà Nguyễn Game Center</h1>
         
-        <div class="status-bar">
-            <span>Nhân vật: Hà Nguyễn 🌸</span>
-            <span id="score-display">Trái tim: 0/10</span>
+        <!-- Khung Nhạc Nền -->
+        <div class="info-box" id="infoDisplay">🌷 Nhấn nút dưới để mở nhạc ngẫu nhiên 🌷</div>
+        <button class="music-btn" id="playBtn" onclick="toggleMusic()">🌷 BẬT NHẠC NỀN 🌷</button>
+
+        <!-- ================= MENU CHÍNH ================= -->
+        <div id="game-menu" class="game-screen active-screen">
+            <button class="menu-btn" onclick="startMemoryGame()">
+                <span>🧩</span> <b>Trò chơi 1:</b> Lật Thẻ Tìm Cặp
+            </button>
+            <button class="menu-btn" onclick="startCatchGame()">
+                <span>🧺</span> <b>Trò chơi 2:</b> Hứng Tim & Tulip
+            </button>
+            <button class="menu-btn" onclick="startJumpGame()">
+                <span>🏃‍♀️</span> <b>Trò chơi 3:</b> Nhảy Né Vật Cản
+            </button>
         </div>
 
-        <div id="maze-container">
-            <canvas id="gameCanvas"></canvas>
+        <!-- ================= TRÒ CHƠI 1: LẬT THẺ BIẾN MẤT ================= -->
+        <div id="screen-memory" class="game-screen">
+            <div id="memory-score" style="font-weight:bold; color:#006D77; margin-bottom:5px;">Cặp đã tìm: 0/6</div>
+            <div id="memory-grid"></div>
         </div>
 
-        <div class="info-box" id="infoDisplay">🌷 Nhấn nút dưới để phát nhạc ngẫu nhiên nha 🌷</div>
-        
-        <button class="music-btn" id="playBtn" onclick="toggleMusic()">🌷 BẬT NHẠC & CHƠI NGAY 🌷</button>
-
-        <div class="d-pad">
-            <div class="center-space"></div>
-            <button class="ctrl-btn" onclick="movePlayer(0, -1)">▲</button>
-            <div class="center-space"></div>
-            <button class="ctrl-btn" onclick="movePlayer(-1, 0)">◀</button>
-            <button class="ctrl-btn" style="background:#006D77; color:white; font-size:0.8rem;">HN</button>
-            <button class="ctrl-btn" onclick="movePlayer(1, 0)">▶</button>
-            <div class="center-space"></div>
-            <button class="ctrl-btn" onclick="movePlayer(0, 1)">▼</button>
-            <div class="center-space"></div>
+        <!-- ================= TRÒ CHƠI 2: HỨNG VẬT PHẨM ================= -->
+        <div id="screen-catch" class="game-screen">
+            <div style="font-weight:bold; color:#006D77; margin-bottom:5px;" id="catchScore">Điểm số: 0/20</div>
+            <canvas id="catchCanvas" width="320" height="320"></canvas>
+            <div class="btn-row">
+                <button class="action-btn" ontouchstart="moveBasket(-30)" onclick="moveBasket(-30)">◀ TRÁI</button>
+                <button class="action-btn" ontouchstart="moveBasket(30)" onclick="moveBasket(30)">PHẢI ▶</button>
+            </div>
         </div>
+
+        <!-- ================= TRÒ CHƠI 3: JUMP RUNNER ================= -->
+        <div id="screen-jump" class="game-screen">
+            <div style="font-weight:bold; color:#006D77; margin-bottom:5px;" id="jumpScore">Điểm số: 0/15</div>
+            <canvas id="jumpCanvas" width="320" height="200"></canvas>
+            <div class="btn-row">
+                <button class="action-btn" style="width:100%" ontouchstart="triggerJump()" onclick="triggerJump()">▲ NHẢY LÊN ▲</button>
+            </div>
+        </div>
+
     </div>
 
     <audio id="bgMusic" loop preload="auto" playsinline webkit-playsinline></audio>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
         const audio = document.getElementById('bgMusic');
         const playBtn = document.getElementById('playBtn');
         const infoDisplay = document.getElementById('infoDisplay');
-        const scoreDisplay = document.getElementById('score-display');
+        const backBtn = document.getElementById('backBtn');
+        const mainTitle = document.getElementById('mainTitle');
 
-        // Danh sách phát 4 bài hát ngẫu nhiên (Chỉ lưu trữ Tên hiển thị bài đang phát)
+        // Danh sách 4 bài hát ngẫu nhiên
         const playlist = [
-            { src: "duchomaivesau.mp3", title: "🎵 Đang phát: Dù Cho Mai Về Sau - Bùi Trường Linh" },
+            { src: "duchomaivesau.mp3", title: "🎵 Đang phát: Dù Cho Mai Về Sau" },
             { src: "giothi.mp3", title: "🎵 Đang phát: Giờ Thì" },
             { src: "emkhongkhoc.mp3", title: "🎵 Đang phát: Em Không Khóc" },
             { src: "duongtoichoemve.mp3", title: "🎵 Đang phát: Đường Tôi Chở Em Về" }
         ];
-
         let currentSong = null;
+        let activeGameLoop = null;
 
         function pickRandomSong() {
             const randomIndex = Math.floor(Math.random() * playlist.length);
@@ -220,169 +156,243 @@
             audio.src = currentSong.src;
         }
 
-        // --- KHỞI TẠO ĐỒ HỌA MÊ CUNG ---
-        const gridSize = 11; 
-        const cellSize = 30; 
-        canvas.width = gridSize * cellSize;
-        canvas.height = gridSize * cellSize;
-
-        let maze = [
-            [1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,1,0,0,0,0,0,1],
-            [1,0,1,0,1,0,1,1,1,0,1],
-            [1,0,1,0,0,0,0,0,1,0,1],
-            [1,1,1,1,1,0,1,0,1,0,1],
-            [1,0,0,0,1,0,1,0,0,0,1],
-            [1,0,1,0,1,1,1,1,1,0,1],
-            [1,0,1,0,0,0,1,0,0,0,1],
-            [1,0,1,1,1,0,1,0,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,1,1,1,1,1,1]
-        ];
-
-        let player = { x: 1, y: 1 };
-        let score = 0;
-        let gameFinished = false;
-        
-        let hearts = [
-            {x: 1, y: 3, active: true}, {x: 3, y: 1, active: true},
-            {x: 5, y: 1, active: true}, {x: 9, y: 1, active: true},
-            {x: 5, y: 5, active: true}, {x: 1, y: 9, active: true},
-            {x: 5, y: 9, active: true}, {x: 9, y: 9, active: true},
-            {x: 7, y: 7, active: true}, {x: 9, y: 5, active: true}
-        ];
-
-        function drawGame() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let r = 0; r < gridSize; r++) {
-                for (let c = 0; c < gridSize; c++) {
-                    if (maze[r][c] === 1) {
-                        ctx.fillStyle = '#006D77'; 
-                        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
-                        ctx.strokeStyle = '#76DAE9';
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(c * cellSize, r * cellSize, cellSize, cellSize);
-                    } else {
-                        ctx.fillStyle = '#F4FAFB'; 
-                        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
-                    }
-                }
-            }
-
-            hearts.forEach(heart => {
-                if (heart.active) {
-                    ctx.fillStyle = '#FF5E7E'; 
-                    ctx.font = "16px Arial";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText("❤️", heart.x * cellSize + cellSize/2, heart.y * cellSize + cellSize/2);
-                }
-            });
-
-            ctx.beginPath();
-            let radius = cellSize / 2 - 4;
-            let centerX = player.x * cellSize + cellSize / 2;
-            let centerY = player.y * cellSize + cellSize / 2;
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.fillStyle = '#76DAE9'; 
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#00464F';
-            ctx.stroke();
-
-            ctx.fillStyle = '#006D77';
-            ctx.font = "bold 10px Quicksand";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("HN", centerX, centerY);
-        }
-
-        function movePlayer(dx, dy) {
-            if(gameFinished) return;
-            let newX = player.x + dx;
-            let newY = player.y + dy;
-            if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
-                if (maze[newY][newX] === 0) {
-                    player.x = newX;
-                    player.y = newY;
-                    checkHeartCollision();
-                }
-            }
-            drawGame();
-        }
-
-        function checkHeartCollision() {
-            hearts.forEach(heart => {
-                if (heart.active && heart.x === player.x && heart.y === player.y) {
-                    heart.active = false;
-                    score++;
-                    scoreDisplay.innerText = `Trái tim: ${score}/${hearts.length}`;
-                    if (score === hearts.length) {
-                        gameFinished = true;
-                        infoDisplay.innerHTML = "<span style='color:#FF5E7E; font-size:1.05rem;'>🎉 Hà Nguyễn nhặt hết tim rồi! Xuất sắc quá em ơi! 💕</span>";
-                    }
-                }
-            });
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) e.preventDefault();
-            if (e.key === 'ArrowUp') movePlayer(0, -1);
-            if (e.key === 'ArrowDown') movePlayer(0, 1);
-            if (e.key === 'ArrowLeft') movePlayer(-1, 0);
-            if (e.key === 'ArrowRight') movePlayer(1, 0);
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            audio.volume = 0.85;
-            createTulips(); // Khởi tạo sẵn hoa tulip ẩn ở nền
-            pickRandomSong(); 
-            drawGame();
-        });
-
-        // Bật/tắt nhạc và kích hoạt hiệu ứng hoa bay tương ứng
         function toggleMusic() {
             if (audio.paused) {
                 audio.play().then(() => {
                     playBtn.innerText = "🎵 Tắt Nhạc Nền";
-                    playBtn.style.backgroundColor = "#76DAE9";
-                    playBtn.style.color = "#006D77";
-                    
-                    if(!gameFinished) infoDisplay.innerText = currentSong.title;
-                    
-                    // Thêm class kích hoạt hoa tulip trắng rơi
+                    playBtn.style.backgroundColor = "#76DAE9"; playBtn.style.color = "#006D77";
+                    infoDisplay.innerText = currentSong.title;
                     document.body.classList.add('music-on');
-                }).catch(err => {
-                    audio.play();
-                    document.body.classList.add('music-on');
-                });
+                }).catch(() => { audio.play(); document.body.classList.add('music-on'); });
             } else {
                 audio.pause();
                 playBtn.innerText = "🎵 Bật Nhạc Nền";
-                playBtn.style.backgroundColor = "#006D77";
-                playBtn.style.color = "white";
-                
-                // Gỡ class để hoa tạm dừng dừng rơi
+                playBtn.style.backgroundColor = "#006D77"; playBtn.style.color = "white";
                 document.body.classList.remove('music-on');
             }
         }
 
-        // Tạo ra các bông hoa Tulip trắng cực đẹp chuyển động ngẫu nhiên
+        function switchScreen(screenId, titleText) {
+            if (activeGameLoop) { cancelAnimationFrame(activeGameLoop); activeGameLoop = null; }
+            document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active-screen'));
+            document.getElementById(screenId).classList.add('active-screen');
+            mainTitle.innerText = titleText;
+            backBtn.style.display = screenId === 'game-menu' ? 'none' : 'block';
+        }
+
+        function showMenu() { switchScreen('game-menu', 'Hà Nguyễn Game Center'); }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            audio.volume = 0.85; pickRandomSong(); createTulips();
+        });
+
+        // ================= TRÒ CHƠI 1: LẬT THẺ BIẾN MẤT =================
+        let memoryIcons = ['🌷','🌷','❤️','❤️','🏸','🏸','🍦','🍦','🎵','🎵','✈️','✈️'];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function startMemoryGame() {
+            switchScreen('screen-memory', '🧩 Lật Thẻ Tìm Cặp');
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = ''; flippedCards = []; matchedPairs = 0;
+            document.getElementById('memory-score').innerText = "Cặp đã tìm: 0/6";
+            
+            // Xáo trộn thẻ
+            memoryIcons.sort(() => Math.random() - 0.5);
+            memoryIcons.forEach((icon, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.icon = icon;
+                card.dataset.index = index;
+                card.onclick = () => flipCard(card);
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            card.classList.add('flipped');
+            card.innerText = card.dataset.icon;
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 600);
+            }
+        }
+
+        function checkMatch() {
+            const [c1, c2] = flippedCards;
+            if (c1.dataset.icon === c2.dataset.icon) {
+                c1.classList.add('matched'); c2.classList.add('matched');
+                matchedPairs++;
+                document.getElementById('memory-score').innerText = `Cặp đã tìm: ${matchedPairs}/6`;
+                if (matchedPairs === 6) {
+                    document.getElementById('memory-score').innerText = "🎉 Xuất sắc! Hà Nguyễn đã chiến thắng! 💕";
+                }
+            } else {
+                c1.classList.remove('flipped'); c2.classList.remove('flipped');
+                c1.innerText = ''; c2.innerText = '';
+            }
+            flippedCards = [];
+        }
+
+        // ================= TRÒ CHƠI 2: HỨNG TIM & TULIP =================
+        const catchCanvas = document.getElementById('catchCanvas');
+        const catchCtx = catchCanvas.getContext('2d');
+        let basketX, items, catchScore, isCatchGameOver;
+
+        function startCatchGame() {
+            switchScreen('screen-catch', '🧺 Hứng Tim & Tulip');
+            basketX = 140; items = []; catchScore = 0; isCatchGameOver = false;
+            document.getElementById('catchScore').innerText = "Điểm số: 0/20";
+            runCatchGame();
+        }
+
+        function moveBasket(dir) { basketX = Math.max(0, Math.min(270, basketX + dir)); }
+
+        // Bấm phím mũi tên trên PC cho Game 2
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') moveBasket(-30);
+            if (e.key === 'ArrowRight') moveBasket(30);
+        });
+
+        function runCatchGame() {
+            if (isCatchGameOver) return;
+            catchCtx.clearRect(0, 0, 320, 320);
+
+            // Tạo vật phẩm rơi ngẫu nhiên
+            if (Math.random() < 0.03) {
+                let rand = Math.random();
+                let type = rand < 0.4 ? '❤️' : (rand < 0.8 ? '🌷' : '🌧️');
+                items.push({ x: Math.random() * 290 + 10, y: 0, type: type });
+            }
+
+            // Vẽ giỏ hứng của Hà Nguyễn
+            catchCtx.fillStyle = '#006D77';
+            catchCtx.fillRect(basketX, 295, 50, 20);
+            catchCtx.fillStyle = '#ffffff';
+            catchCtx.font = 'bold 11px Quicksand';
+            catchCtx.fillText('HN 🌸', basketX + 10, 309);
+
+            // Di chuyển và kiểm tra va chạm vật phẩm
+            for (let i = items.length - 1; i >= 0; i--) {
+                let it = items[i];
+                it.y += 3; // Tốc độ rơi
+
+                // Vẽ vật phẩm
+                catchCtx.font = '20px Arial';
+                catchCtx.fillText(it.type, it.x, it.y);
+
+                // Kiểm tra va chạm giỏ hứng
+                if (it.y >= 285 && it.y <= 310 && it.x >= basketX - 10 && it.x <= basketX + 50) {
+                    if (it.type === '🌧️') {
+                        catchScore = Math.max(0, catchScore - 2);
+                    } else {
+                        catchScore++;
+                    }
+                    document.getElementById('catchScore').innerText = `Điểm số: ${catchScore}/20`;
+                    items.splice(i, 1);
+                    
+                    if (catchScore >= 20) {
+                        isCatchGameOver = true;
+                        document.getElementById('catchScore').innerText = "🎉 Tuyệt vời! Bạn đã hứng trọn tình yêu! 💕";
+                    }
+                    continue;
+                }
+
+                // Loại bỏ vật phẩm rơi khỏi màn hình
+                if (it.y > 320) items.splice(i, 1);
+            }
+
+            if (!isCatchGameOver) activeGameLoop = requestAnimationFrame(runCatchGame);
+        }
+
+        // ================= TRÒ CHƠI 3: JUMP RUNNER =================
+        const jumpCanvas = document.getElementById('jumpCanvas');
+        const jumpCtx = jumpCanvas.getContext('2d');
+        let playerY, playerVelocity, obstacles, jumpScore, isJumpGameOver, jumpTimer;
+
+        function startJumpGame() {
+            switchScreen('screen-jump', '🏃‍♀️ Nhảy Né Vật Cản');
+            playerY = 160; playerVelocity = 0; obstacles = []; jumpScore = 0; isJumpGameOver = false; jumpTimer = 0;
+            document.getElementById('jumpScore').innerText = "Điểm số: 0/15";
+            runJumpGame();
+        }
+
+        function triggerJump() {
+            if (playerY === 160) { playerVelocity = -10; } // Lực nhảy cao
+        }
+
+        // Phím Space trên bàn máy tính
+        window.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'ArrowUp') triggerJump(); });
+
+        function runJumpGame() {
+            if (isJumpGameOver) return;
+            jumpCtx.clearRect(0, 0, 320, 200);
+
+            // Vẽ đường mặt đất
+            jumpCtx.strokeStyle = '#006D77'; jumpCtx.lineWidth = 3;
+            jumpCtx.beginPath(); jumpCtx.moveTo(0, 180); jumpCtx.lineTo(320, 180); jumpCtx.stroke();
+
+            // Cơ học nhảy (Trọng lực)
+            playerY += playerVelocity;
+            playerVelocity += 0.6; // Gia tốc rơi xuống
+            if (playerY >= 160) { playerY = 160; playerVelocity = 0; }
+
+            // Vẽ nhân vật Hà Nguyễn
+            jumpCtx.beginPath();
+            jumpCtx.arc(35, playerY + 10, 10, 0, 2 * Math.PI);
+            jumpCtx.fillStyle = '#76DAE9'; jumpCtx.fill();
+            jumpCtx.lineWidth = 2; jumpCtx.strokeStyle = '#00464F'; jumpCtx.stroke();
+            jumpCtx.fillStyle = '#006D77'; jumpCtx.font = 'bold 9px Quicksand';
+            jumpCtx.fillText('HN', 28, playerY + 13);
+
+            // Tạo chướng ngại vật (Hộp màu đỏ đen xui xẻo)
+            jumpTimer++;
+            if (jumpTimer % 90 === 0) { obstacles.push({ x: 320, width: 15, height: 20 }); }
+
+            // Xử lý chướng ngại vật
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let ob = obstacles[i];
+                ob.x -= 4; // Tốc độ trượt chướng ngại vật
+
+                // Vẽ chướng ngại vật
+                jumpCtx.fillStyle = '#FF5E7E';
+                jumpCtx.fillRect(ob.x, 180 - ob.height, ob.width, ob.height);
+
+                // Kiểm tra va chạm hộp chướng ngại vật
+                if (ob.x <= 45 && ob.x >= 15 && playerY >= (180 - ob.height - 15)) {
+                    isJumpGameOver = true;
+                    document.getElementById('jumpScore').innerText = "💥 Ôi! Hãy ấn Thử Lại hoặc đổi trò chơi nha!";
+                    setTimeout(startJumpGame, 2000); // Tự động hồi sinh sau 2 giây
+                    break;
+                }
+
+                // Vượt qua thành công vật cản
+                if (ob.x < -20) {
+                    obstacles.splice(i, 1);
+                    jumpScore++;
+                    document.getElementById('jumpScore').innerText = `Điểm số: ${jumpScore}/15`;
+                    if (jumpScore >= 15) {
+                        isJumpGameOver = true;
+                        document.getElementById('jumpScore').innerText = "🎉 Đỉnh quá Hà Nguyễn ơi! Bạn đã chiến thắng! 💕";
+                    }
+                }
+            }
+
+            if (!isJumpGameOver) activeGameLoop = requestAnimationFrame(runJumpGame);
+        }
+
+        // --- TẠO HIỆU ỨNG HOA TULIP TRẮNG NỀN ---
         function createTulips() {
             const body = document.body;
-            const tulipCount = 12; // Số lượng bông hoa bay trên màn hình cùng lúc
-            
-            for (let i = 0; i < tulipCount; i++) {
+            for (let i = 0; i < 12; i++) {
                 let tulip = document.createElement('div');
-                tulip.classList.add('tulip');
-                tulip.innerText = "🌷"; // Biểu tượng hoa tulip
-                
-                // Áp dụng bộ lọc màu CSS biến đổi hoa tulip thường thành màu trắng tinh khôi
+                tulip.classList.add('tulip'); tulip.innerText = "🌷";
                 tulip.style.filter = "brightness(0) invert(1) drop-shadow(0px 2px 3px rgba(0,0,0,0.15))";
-                
                 tulip.style.left = Math.random() * 100 + 'vw';
-                tulip.style.animationDuration = Math.random() * 4 + 6 + 's'; // Tốc độ rơi ngẫu nhiên từ 6-10s
-                tulip.style.animationDelay = Math.random() * 6 + 's'; // Độ trễ xuất hiện giúp hoa rơi rải rác mượt mà
+                tulip.style.animationDuration = Math.random() * 4 + 6 + 's';
+                tulip.style.animationDelay = Math.random() * 6 + 's';
                 body.appendChild(tulip);
             }
         }
