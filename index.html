@@ -2,20 +2,21 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Hà Nguyễn</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hà Nguyễn - Mê Cung Tình Yêu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght=700&family=Quicksand:wght=500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Toàn bộ bảng màu được trích xuất từ hình ảnh bạn gửi */
         * {
             box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: #A8E6EF; /* Màu xanh nền chính (sáng và tươi) */
+            background-color: #A8E6EF; 
             background-image: linear-gradient(135deg, #A8E6EF 0%, #76DAE9 100%);
             min-height: 100vh;
             display: flex;
@@ -30,125 +31,122 @@
         .container {
             text-align: center;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.5); /* Tăng độ trong suốt để nền xanh nổi bật */
-            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.5); 
+            padding: 15px 10px;
             border-radius: 24px;
             backdrop-filter: blur(8px);
-            box-shadow: 0 8px 32px 0 rgba(118, 218, 233, 0.3); /* Shadow màu xanh */
+            box-shadow: 0 8px 32px 0 rgba(118, 218, 233, 0.3); 
             border: 1px solid rgba(255, 255, 255, 0.7);
-            width: 90%;
-            max-width: 450px;
-            margin: 10px;
+            width: 95%;
+            max-width: 440px;
+            margin: 5px;
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: calc(2rem + 3vw);
-            color: #006D77; /* Màu văn bản đậm hơn để tương phản tốt */
-            margin: 15px 0;
-            word-wrap: break-word;
-            line-height: 1.3;
+            font-size: 2.2rem;
+            color: #006D77; 
+            margin: 5px 0;
         }
 
+        /* Khu vực bảng điểm và thông báo */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            font-weight: 700;
+            color: #006D77;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        /* Khung chứa Mê cung */
+        #maze-container {
+            position: relative;
+            background-color: #ffffff;
+            border: 4px solid #006D77;
+            border-radius: 12px;
+            margin: 0 auto;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* Khung hiển thị lời Karaoke */
         .karaoke-box {
-            margin: 20px auto;
-            min-height: 70px;
+            margin: 10px auto;
+            min-height: 45px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            color: #006D77; /* Màu lời nhạc */
-            padding: 10px;
+            color: #006D77;
+            padding: 5px 10px;
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.7);
-            border: 1px dashed #76DAE9; /* Border màu xanh sáng */
-            transition: all 0.3s ease;
+            border: 1px dashed #76DAE9;
+            text-align: center;
         }
 
         .active-lyric {
-            color: #00464F; /* Màu chữ active khi hát đến */
-            font-size: 1.2rem;
-            animation: pulseText 0.5s ease-in-out;
+            color: #FF5E7E; /* Đổi sang màu hồng tim khi chạy chữ nổi bật */
+            font-size: 1.05rem;
+            transition: all 0.2s;
         }
 
-        .tulip-container {
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .tulip {
-            position: relative;
-            width: 35px;
-            height: 100px;
-        }
-
-        .flower {
-            width: 35px;
-            height: 40px;
-            background-color: #A8E6EF; /* Màu hoa chính (trùng với nền) */
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            position: relative;
-            box-shadow: inset 2px -2px 8px rgba(255,255,255,0.6);
-        }
-
-        .flower::before {
-            content: '';
-            position: absolute;
-            left: 11px;
-            width: 13px;
-            height: 36px;
-            background-color: #76DAE9; /* Màu cánh hoa trong */
-            border-radius: 50%;
-        }
-
-        .stem {
-            width: 3.5px;
-            height: 60px;
-            background-color: #9DBEB7; /* Màu thân và lá giữ nguyên sự tự nhiên */
-            margin: 0 auto;
-        }
-
-        .leaf {
-            position: absolute;
-            width: 14px;
-            height: 30px;
-            background-color: #9DBEB7;
-            border-radius: 100% 0% 100% 0%;
-            top: 55px;
-            left: 17px;
-            transform: rotate(15deg);
-        }
-
-        .leaf.left {
-            border-radius: 0% 100% 0% 100%;
-            left: 5px;
-            transform: rotate(-35deg);
-        }
-
+        /* Nút Điều Khiển Nhạc */
         .music-btn {
-            margin-top: 15px;
-            padding: 12px 28px;
-            background-color: #006D77; /* Màu nút bấm (đậm hơn để nổi bật) */
+            padding: 10px 20px;
+            background-color: #006D77; 
             color: white;
             border: none;
-            border-radius: 25px;
-            font-size: 0.95rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 109, 119, 0.3);
-            transition: all 0.3s ease;
-            font-family: 'Quicksand', sans-serif;
             font-weight: bold;
             width: 100%;
-            animation: pulseBtn 2s infinite;
+            box-shadow: 0 4px 10px rgba(0, 109, 119, 0.2);
             -webkit-tap-highlight-color: transparent; 
         }
 
+        /* Bộ Nút Di Chuyển Ảo Cho Điện Thoại */
+        .d-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            width: 160px;
+            margin: 10px auto 0 auto;
+        }
+
+        .ctrl-btn {
+            background-color: #76DAE9;
+            color: #006D77;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            active-background-color: #006D77;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ctrl-btn:active {
+            background-color: #006D77;
+            color: white;
+        }
+        .center-space {
+            visibility: hidden;
+        }
+
+        /* Cánh hoa bay nền */
         .petal {
             position: absolute;
-            background-color: rgba(168, 230, 239, 0.45); /* Cánh hoa rơi màu xanh bạn gửi */
+            background-color: rgba(168, 230, 239, 0.4); 
             border-radius: 100% 0 100% 0;
             animation: float 7s infinite linear;
             pointer-events: none;
@@ -158,58 +156,89 @@
             0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(110vh) translateX(80px) rotate(360deg); opacity: 0; }
         }
-
-        @keyframes pulseBtn {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes pulseText {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); }
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="tulip-container">
-            <div class="tulip" style="transform: rotate(-10deg);">
-                <div class="flower"></div>
-                <div class="stem"></div>
-                <div class="leaf left"></div>
-            </div>
-            <div class="tulip" style="transform: translateY(-8px);">
-                <div class="flower" style="background-color: #76DAE9;"></div>
-                <div class="stem"></div>
-                <div class="leaf"></div>
-            </div>
-            <div class="tulip" style="transform: rotate(10deg);">
-                <div class="flower"></div>
-                <div class="stem"></div>
-                <div class="leaf left"></div>
-            </div>
+        <h1>Mê Cung Tình Yêu</h1>
+        
+        <div class="status-bar">
+            <span id="player-tag">Nhân vật: Hà Nguyễn 🌸</span>
+            <span id="score-display">Trái tim: 0/10</span>
         </div>
 
-        <h1>Yêu cục cưng Hà Nguyễn</h1>
+        <div id="maze-container">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div class="karaoke-box" id="lyricDisplay">🌸 Nhấn nút dưới để mở nhạc và chơi game nha 🌸</div>
         
-        <div class="karaoke-box" id="lyricDisplay">✨ Đang chờ món quà nhỏ... ✨</div>
-        
-        <button class="music-btn" id="playBtn" onclick="toggleMusic()">🌸 Nhấn vào đây để mở quà nha 🌸</button>
+        <button class="music-btn" id="playBtn" onclick="toggleMusic()">🌸 BẬT NHẠC & CHƠI NGAY 🌸</button>
+
+        <div class="d-pad">
+            <div class="center-space"></div>
+            <button class="ctrl-btn" onclick="movePlayer(0, -1)">▲</button>
+            <div class="center-space"></div>
+            <button class="ctrl-btn" onclick="movePlayer(-1, 0)">◀</button>
+            <button class="ctrl-btn" style="background:#006D77; color:white; font-size:0.8rem;">HN</button>
+            <button class="ctrl-btn" onclick="movePlayer(1, 0)">▶</button>
+            <div class="center-space"></div>
+            <button class="ctrl-btn" onclick="movePlayer(0, 1)">▼</button>
+            <div class="center-space"></div>
+        </div>
     </div>
 
     <audio id="bgMusic" loop preload="auto" playsinline webkit-playsinline>
         <source src="https://files.catbox.moe/6w705z.mp3" type="audio/mp3">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
     </audio>
 
     <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
         const audio = document.getElementById('bgMusic');
         const playBtn = document.getElementById('playBtn');
         const lyricDisplay = document.getElementById('lyricDisplay');
+        const scoreDisplay = document.getElementById('score-display');
 
+        // Khởi tạo kích thước khung game (Phù hợp màn hình dọc điện thoại)
+        const gridSize = 11; // Số ô lưới (bắt buộc lẻ để tạo mê cung chuẩn)
+        const cellSize = 30; // Kích thước mỗi ô vuông (pixels)
+        canvas.width = gridSize * cellSize;
+        canvas.height = gridSize * cellSize;
+
+        // Định nghĩa bản đồ mê cung (0: Lối đi, 1: Tường đá màu xanh chủ đạo)
+        // Được thiết kế thủ công đảm bảo thuật toán đi được mượt mà
+        let maze = [
+            [1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,1,0,0,0,0,0,1],
+            [1,0,1,0,1,0,1,1,1,0,1],
+            [1,0,1,0,0,0,0,0,1,0,1],
+            [1,1,1,1,1,0,1,0,1,0,1],
+            [1,0,0,0,1,0,1,0,0,0,1],
+            [1,0,1,0,1,1,1,1,1,0,1],
+            [1,0,1,0,0,0,1,0,0,0,1],
+            [1,0,1,1,1,0,1,0,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        // Vị trí xuất phát của Hà Nguyễn
+        let player = { x: 1, y: 1 };
+        
+        // Danh sách các tọa độ chứa Trái tim màu hồng
+        let hearts = [
+            {x: 1, y: 3, active: true}, {x: 3, y: 1, active: true},
+            {x: 5, y: 1, active: true}, {x: 9, y: 1, active: true},
+            {x: 5, y: 5, active: true}, {x: 1, y: 9, active: true},
+            {x: 5, y: 9, active: true}, {x: 9, y: 9, active: true},
+            {x: 7, y: 7, active: true}, {x: 9, y: 5, active: true}
+        ];
+        
+        let score = 0;
+        let gameFinished = false;
+
+        // Lời bài hát Dù Cho Mai Về Sau khớp thời gian thực
         const lyrics = [
             { time: 0, text: "🎵 Dù Cho Mai Về Sau - Bùi Trường Linh 🎵" },
             { time: 10, text: "Đoạn đường dài phía trước, con đường mình sẽ bước..." },
@@ -223,17 +252,118 @@
             { time: 61, text: "Yêu cục cưng Hà Nguyễn nhất trên đời! 💕" }
         ];
 
+        // Vẽ toàn bộ trò chơi lên màn hình
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Vẽ các bức tường mê cung (Màu xanh chủ đạo tương thích bó hoa)
+            for (let r = 0; r < gridSize; r++) {
+                for (let c = 0; c < gridSize; c++) {
+                    if (maze[r][c] === 1) {
+                        ctx.fillStyle = '#006D77'; // Xanh đậm viền bó hoa
+                        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+                        // Tạo hiệu ứng khối nhẹ cho mê cung đẹp mắt
+                        ctx.strokeStyle = '#76DAE9';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(c * cellSize, r * cellSize, cellSize, cellSize);
+                    } else {
+                        ctx.fillStyle = '#F4FAFB'; // Lối đi màu xanh nhạt gần trắng
+                        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+
+            // 2. Vẽ các Trái Tim Màu Hồng cần nhặt
+            hearts.forEach(heart => {
+                if (heart.active) {
+                    ctx.fillStyle = '#FF5E7E'; // Hồng cánh sen ngọt ngào
+                    ctx.font = "16px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    // Vẽ biểu tượng trái tim Unicode
+                    ctx.fillText("❤️", heart.x * cellSize + cellSize/2, heart.y * cellSize + cellSize/2);
+                }
+            });
+
+            // 3. Vẽ nhân vật chính "Hà Nguyễn"
+            ctx.beginPath();
+            let radius = cellSize / 2 - 4;
+            let centerX = player.x * cellSize + cellSize / 2;
+            let centerY = player.y * cellSize + cellSize / 2;
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#76DAE9'; // Màu xanh sáng của hoa tulip làm nền nhân vật
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#00464F';
+            ctx.stroke();
+
+            // Chữ viết tắt tên trên vòng tròn nhân vật cho cá tính
+            ctx.fillStyle = '#006D77';
+            ctx.font = "bold 10px Quicksand";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("HN", centerX, centerY);
+        }
+
+        // Hàm xử lý di chuyển nhân vật
+        function movePlayer(dx, dy) {
+            if(gameFinished) return;
+            
+            let newX = player.x + dx;
+            let newY = player.y + dy;
+
+            // Kiểm tra xem vị trí mới có phải là đường đi hợp lệ không (không đâm vào tường 1)
+            if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
+                if (maze[newY][newX] === 0) {
+                    player.x = newX;
+                    player.y = newY;
+                    
+                    // Kiểm tra xem có ăn được trái tim nào không
+                    checkHeartCollision();
+                }
+            }
+            drawGame();
+        }
+
+        // Kiểm tra xem Hà Nguyễn đã chạm vào trái tim chưa
+        function checkHeartCollision() {
+            hearts.forEach(heart => {
+                if (heart.active && heart.x === player.x && heart.y === player.y) {
+                    heart.active = false;
+                    score++;
+                    scoreDisplay.innerText = `Trái tim: ${score}/${hearts.length}`;
+                    
+                    // Kiểm tra điều kiện thắng cuộc
+                    if (score === hearts.length) {
+                        gameFinished = true;
+                        lyricDisplay.innerHTML = "<span style='color:#FF5E7E; font-size:1.1rem;'>🎉 Xuất sắc quá! Hà Nguyễn đã nhặt hết tim rồi! Yêu em! 💕</span>";
+                    }
+                }
+            });
+        }
+
+        // Lắng nghe sự kiện bàn phím máy tính
+        window.addEventListener('keydown', (e) => {
+            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+                e.preventDefault(); // Tránh cuộn trang khi bấm phím điều hướng
+            }
+            
+            if (e.key === 'ArrowUp') movePlayer(0, -1);
+            if (e.key === 'ArrowDown') movePlayer(0, 1);
+            if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+            if (e.key === 'ArrowRight') movePlayer(1, 0);
+        });
+
+        // Khởi động hệ thống khi tải trang xong
         window.addEventListener('DOMContentLoaded', () => {
             audio.volume = 0.85;
             createPetals();
-            
-            setTimeout(() => {
-                if(audio.paused) {
-                    lyricDisplay.innerText = "🌸 Chạm nút bên dưới để phát nhạc nha 🌸";
-                }
-            }, 1000);
+            drawGame();
 
+            // Đồng bộ Karaoke lời bài hát
             audio.addEventListener('timeupdate', () => {
+                if(gameFinished) return; // Nếu thắng game thì giữ nguyên thông báo chúc mừng
+                
                 const currentTime = audio.currentTime;
                 let currentText = lyrics[0].text;
                 
@@ -253,38 +383,34 @@
             });
         });
 
+        // Cơ chế kích hoạt nhạc và trò chơi chống chặn trên điện thoại
         function toggleMusic() {
             if (audio.paused) {
-                audio.load(); 
-                let playPromise = audio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        playBtn.innerText = "🎵 Tắt Nhạc";
-                        playBtn.style.backgroundColor = "#A8E6EF";
-                        playBtn.style.color = "#006D77";
-                        playBtn.style.animation = "none";
-                    }).catch(err => {
-                        audio.play();
-                        playBtn.innerText = "🎵 Tắt Nhạc";
-                    });
-                }
+                audio.load();
+                audio.play().then(() => {
+                    playBtn.innerText = "🎵 Tắt Nhạc Nền";
+                    playBtn.style.backgroundColor = "#76DAE9";
+                    playBtn.style.color = "#006D77";
+                }).catch(err => {
+                    audio.play();
+                });
             } else {
                 audio.pause();
-                playBtn.innerText = "🎵 Tiếp Tục Phát";
+                playBtn.innerText = "🎵 Bật Nhạc Nền";
                 playBtn.style.backgroundColor = "#006D77";
                 playBtn.style.color = "white";
             }
         }
 
+        // Hiệu ứng cánh hoa bay lãng mạn ở background
         function createPetals() {
             const body = document.body;
-            for (let i = 0; i < 15; i++) { /* Tăng số lượng cánh hoa */
+            for (let i = 0; i < 10; i++) {
                 let petal = document.createElement('div');
                 petal.classList.add('petal');
                 petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.width = Math.random() * 14 + 10 + 'px';
-                petal.style.height = Math.random() * 20 + 12 + 'px';
+                petal.style.width = Math.random() * 12 + 10 + 'px';
+                petal.style.height = Math.random() * 18 + 12 + 'px';
                 petal.style.animationDuration = Math.random() * 4 + 6 + 's';
                 petal.style.animationDelay = Math.random() * 4 + 's';
                 body.appendChild(petal);
