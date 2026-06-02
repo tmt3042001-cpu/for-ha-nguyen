@@ -73,9 +73,10 @@
             display: block;
         }
 
-        .karaoke-box {
+        /* Khung thông báo trạng thái bài hát (Đã bỏ Karaoke) */
+        .info-box {
             margin: 10px auto;
-            min-height: 55px;
+            min-height: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -87,12 +88,6 @@
             background: rgba(255, 255, 255, 0.7);
             border: 1px dashed #76DAE9;
             text-align: center;
-        }
-
-        .active-lyric {
-            color: #FF5E7E;
-            font-size: 1.05rem;
-            transition: all 0.2s;
         }
 
         .music-btn {
@@ -137,17 +132,34 @@
             visibility: hidden;
         }
 
-        .petal {
+        /* 🌷 Thiết kế và hiệu ứng hoa Tulip Trắng bay 🌷 */
+        .tulip {
             position: absolute;
-            background-color: rgba(168, 230, 239, 0.4); 
-            border-radius: 100% 0 100% 0;
-            animation: float 7s infinite linear;
+            font-size: 24px;
             pointer-events: none;
+            opacity: 0;
+            z-index: 1;
         }
 
-        @keyframes float {
-            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) translateX(80px) rotate(360deg); opacity: 0; }
+        .music-on .tulip {
+            animation: floatTulip 8s infinite linear;
+        }
+
+        @keyframes floatTulip {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.85;
+            }
+            90% {
+                opacity: 0.85;
+            }
+            100% {
+                transform: translateY(110vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -165,9 +177,9 @@
             <canvas id="gameCanvas"></canvas>
         </div>
 
-        <div class="karaoke-box" id="lyricDisplay">🌸 Nhấn nút dưới để bắt đầu chơi nha 🌸</div>
+        <div class="info-box" id="infoDisplay">🌷 Nhấn nút dưới để phát nhạc ngẫu nhiên nha 🌷</div>
         
-        <button class="music-btn" id="playBtn" onclick="toggleMusic()">🌸 BẬT NHẠC & CHƠI NGAY 🌸</button>
+        <button class="music-btn" id="playBtn" onclick="toggleMusic()">🌷 BẬT NHẠC & CHƠI NGAY 🌷</button>
 
         <div class="d-pad">
             <div class="center-space"></div>
@@ -189,76 +201,26 @@
         const ctx = canvas.getContext('2d');
         const audio = document.getElementById('bgMusic');
         const playBtn = document.getElementById('playBtn');
-        const lyricDisplay = document.getElementById('lyricDisplay');
+        const infoDisplay = document.getElementById('infoDisplay');
         const scoreDisplay = document.getElementById('score-display');
 
-        // =======================================================================
-        // 🌟 CẤU HÌNH PHÁT NGẪU NHIÊN 4 BÀI HÁT KÈM LYRICS ĐỒNG BỘ CHUẨN XÁC 🌟
-        // Hãy kiểm tra tên tệp .mp3 trong thư mục của bạn trùng với giá trị 'src' nhé.
-        // =======================================================================
+        // Danh sách phát 4 bài hát ngẫu nhiên (Chỉ lưu trữ Tên hiển thị bài đang phát)
         const playlist = [
-            {
-                src: "duchomaivesau.mp3",
-                lyrics: [
-                    { time: 0, text: "🎵 Đang phát: Dù Cho Mai Về Sau - Bùi Trường Linh" },
-                    { time: 6, text: "Đoạn đường dài phía trước, con đường mình sẽ bước..." },
-                    { time: 12, text: "Liệu có bao giờ anh nhìn lại và nhớ em?" },
-                    { time: 18, text: "Những kỷ niệm êm đềm, ta đã cùng bên nhau..." },
-                    { time: 24, text: "Giờ đây tan thành mây khói, bay về trời." },
-                    { time: 31, text: "Dù cho mai về sau, mình già cỗi hóa mây trời..." },
-                    { time: 38, text: "Anh vẫn muốn bên em, ngắm nhìn thế gian ngoài kia rộng lớn..." },
-                    { time: 45, text: "Dù thế giới đổi thay, lòng này chẳng hề lay chuyển..." },
-                    { time: 52, text: "Nguyện trọn kiếp yêu em, đến tận cùng của thời gian. 💕" }
-                ]
-            },
-            {
-                src: "giothi.mp3",
-                lyrics: [
-                    { time: 0, text: "🎵 Đang phát: Giờ Thì - Đen vâu ft. Lynk Lee" },
-                    { time: 5, text: "Giờ thì anh đã biết, giờ thì anh đã hay..." },
-                    { time: 11, text: "Những thói quen mỗi ngày, giờ thành mây khói bay." },
-                    { time: 17, text: "Anh gom hết chút nắng ấm, gửi vào trong gió mây..." },
-                    { time: 24, text: "Mong bình yên sẽ đến, xoa dịu đôi bờ vai gầy." },
-                    { time: 30, text: "Đi qua góc phố quen, thấy lòng mình bình yên lạ..." },
-                    { time: 37, text: "Giờ thì ta đã hiểu, tình yêu vốn chẳng cách xa. 💕" }
-                ]
-            },
-            {
-                src: "emkhongkhoc.mp3",
-                lyrics: [
-                    { time: 0, text: "🎵 Đang phát: Em Không Khóc - buitruonglinh" },
-                    { time: 6, text: "Và em nói em không khóc đâu, nhưng nước mắt cứ rơi..." },
-                    { time: 13, text: "Tình yêu chúng ta ngày nào, giờ gửi lại cho mây trời." },
-                    { time: 20, text: "Có những nỗi nhớ nghẹn ngào giấu kín sau nụ cười..." },
-                    { time: 27, text: "Dù lòng còn thương nhiều lắm, nhưng phải buông tay thôi." },
-                    { time: 34, text: "Em hứa em sẽ mạnh mẽ, đi qua giông bão cuộc đời..." },
-                    { time: 42, text: "Yêu thương gửi lại nơi ấy, chúc em bình yên một đời. 💕" }
-                ]
-            },
-            {
-                src: "duongtoichoemve.mp3",
-                lyrics: [
-                    { time: 0, text: "🎵 Đang phát: Đường Tôi Chở Em Về - buitruonglinh" },
-                    { time: 5, text: "Xe đạp lướt nhanh trên con phố dài, gió thổi tóc em bay..." },
-                    { time: 11, text: "Đường tôi chở em về, chiều hoàng hôn buông xuống dịu dàng." },
-                    { time: 17, text: "Nhìn nụ cười em vô tư, thấy lòng mình ấm áp lạ lùng..." },
-                    { time: 23, text: "Muốn ôm cả thế giới nhỏ bé, giấu vào sau tấm lưng này." },
-                    { time: 30, text: "Nguyện làm người đón đưa em qua những ngày nắng mưa..." },
-                    { time: 37, text: "Đường dài tương lai phía trước, có anh và em sánh đôi. 💕" }
-                ]
-            }
+            { src: "duchomaivesau.mp3", title: "🎵 Đang phát: Dù Cho Mai Về Sau - Bùi Trường Linh" },
+            { src: "giothi.mp3", title: "🎵 Đang phát: Giờ Thì" },
+            { src: "emkhongkhoc.mp3", title: "🎵 Đang phát: Em Không Khóc" },
+            { src: "duongtoichoemve.mp3", title: "🎵 Đang phát: Đường Tôi Chở Em Về" }
         ];
 
         let currentSong = null;
 
-        // Hàm chọn bài hát ngẫu nhiên
         function pickRandomSong() {
             const randomIndex = Math.floor(Math.random() * playlist.length);
             currentSong = playlist[randomIndex];
             audio.src = currentSong.src;
         }
 
-        // --- HỆ THỐNG GAMEPLAY MÊ CUNG ---
+        // --- KHỞI TẠO ĐỒ HỌA MÊ CUNG ---
         const gridSize = 11; 
         const cellSize = 30; 
         canvas.width = gridSize * cellSize;
@@ -357,7 +319,7 @@
                     scoreDisplay.innerText = `Trái tim: ${score}/${hearts.length}`;
                     if (score === hearts.length) {
                         gameFinished = true;
-                        lyricDisplay.innerHTML = "<span style='color:#FF5E7E; font-size:1.05rem;'>🎉 Hà Nguyễn nhặt hết tim rồi! Xuất sắc quá em ơi! 💕</span>";
+                        infoDisplay.innerHTML = "<span style='color:#FF5E7E; font-size:1.05rem;'>🎉 Hà Nguyễn nhặt hết tim rồi! Xuất sắc quá em ơi! 💕</span>";
                     }
                 }
             });
@@ -373,61 +335,55 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             audio.volume = 0.85;
-            createPetals();
+            createTulips(); // Khởi tạo sẵn hoa tulip ẩn ở nền
             pickRandomSong(); 
             drawGame();
-
-            // Bộ xử lý Lyrics thông minh bám đuổi thời gian thực của bài hát hiện hành
-            audio.addEventListener('timeupdate', () => {
-                if(gameFinished || !currentSong) return;
-                
-                const currentTime = audio.currentTime;
-                let currentText = currentSong.lyrics[0].text;
-                
-                for (let i = 0; i < currentSong.lyrics.length; i++) {
-                    if (currentTime >= currentSong.lyrics[i].time) {
-                        currentText = currentSong.lyrics[i].text;
-                    }
-                }
-                
-                if (lyricDisplay.innerText !== currentText) {
-                    lyricDisplay.innerText = currentText;
-                    lyricDisplay.classList.add('active-lyric');
-                    setTimeout(() => {
-                        lyricDisplay.classList.remove('active-lyric');
-                    }, 400);
-                }
-            });
         });
 
+        // Bật/tắt nhạc và kích hoạt hiệu ứng hoa bay tương ứng
         function toggleMusic() {
             if (audio.paused) {
                 audio.play().then(() => {
                     playBtn.innerText = "🎵 Tắt Nhạc Nền";
                     playBtn.style.backgroundColor = "#76DAE9";
                     playBtn.style.color = "#006D77";
+                    
+                    if(!gameFinished) infoDisplay.innerText = currentSong.title;
+                    
+                    // Thêm class kích hoạt hoa tulip trắng rơi
+                    document.body.classList.add('music-on');
                 }).catch(err => {
                     audio.play();
+                    document.body.classList.add('music-on');
                 });
             } else {
                 audio.pause();
                 playBtn.innerText = "🎵 Bật Nhạc Nền";
                 playBtn.style.backgroundColor = "#006D77";
                 playBtn.style.color = "white";
+                
+                // Gỡ class để hoa tạm dừng dừng rơi
+                document.body.classList.remove('music-on');
             }
         }
 
-        function createPetals() {
+        // Tạo ra các bông hoa Tulip trắng cực đẹp chuyển động ngẫu nhiên
+        function createTulips() {
             const body = document.body;
-            for (let i = 0; i < 10; i++) {
-                let petal = document.createElement('div');
-                petal.classList.add('petal');
-                petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.width = Math.random() * 12 + 10 + 'px';
-                petal.style.height = Math.random() * 18 + 12 + 'px';
-                petal.style.animationDuration = Math.random() * 4 + 6 + 's';
-                petal.style.animationDelay = Math.random() * 4 + 's';
-                body.appendChild(petal);
+            const tulipCount = 12; // Số lượng bông hoa bay trên màn hình cùng lúc
+            
+            for (let i = 0; i < tulipCount; i++) {
+                let tulip = document.createElement('div');
+                tulip.classList.add('tulip');
+                tulip.innerText = "🌷"; // Biểu tượng hoa tulip
+                
+                // Áp dụng bộ lọc màu CSS biến đổi hoa tulip thường thành màu trắng tinh khôi
+                tulip.style.filter = "brightness(0) invert(1) drop-shadow(0px 2px 3px rgba(0,0,0,0.15))";
+                
+                tulip.style.left = Math.random() * 100 + 'vw';
+                tulip.style.animationDuration = Math.random() * 4 + 6 + 's'; // Tốc độ rơi ngẫu nhiên từ 6-10s
+                tulip.style.animationDelay = Math.random() * 6 + 's'; // Độ trễ xuất hiện giúp hoa rơi rải rác mượt mà
+                body.appendChild(tulip);
             }
         }
     </script>
