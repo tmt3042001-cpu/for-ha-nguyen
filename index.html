@@ -49,7 +49,6 @@
             margin: 5px 0;
         }
 
-        /* Khu vực bảng điểm và thông báo */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -60,7 +59,6 @@
             margin-bottom: 5px;
         }
 
-        /* Khung chứa Mê cung */
         #maze-container {
             position: relative;
             background-color: #ffffff;
@@ -75,10 +73,9 @@
             display: block;
         }
 
-        /* Khung hiển thị lời Karaoke */
         .karaoke-box {
             margin: 10px auto;
-            min-height: 45px;
+            min-height: 55px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -93,12 +90,11 @@
         }
 
         .active-lyric {
-            color: #FF5E7E; /* Đổi sang màu hồng tim khi chạy chữ nổi bật */
+            color: #FF5E7E;
             font-size: 1.05rem;
             transition: all 0.2s;
         }
 
-        /* Nút Điều Khiển Nhạc */
         .music-btn {
             padding: 10px 20px;
             background-color: #006D77; 
@@ -113,7 +109,6 @@
             -webkit-tap-highlight-color: transparent; 
         }
 
-        /* Bộ Nút Di Chuyển Ảo Cho Điện Thoại */
         .d-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -132,7 +127,6 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-            active-background-color: #006D77;
             -webkit-tap-highlight-color: transparent;
         }
         .ctrl-btn:active {
@@ -143,7 +137,6 @@
             visibility: hidden;
         }
 
-        /* Cánh hoa bay nền */
         .petal {
             position: absolute;
             background-color: rgba(168, 230, 239, 0.4); 
@@ -164,7 +157,7 @@
         <h1>Mê Cung Tình Yêu</h1>
         
         <div class="status-bar">
-            <span id="player-tag">Nhân vật: Hà Nguyễn 🌸</span>
+            <span>Nhân vật: Hà Nguyễn 🌸</span>
             <span id="score-display">Trái tim: 0/10</span>
         </div>
 
@@ -172,7 +165,7 @@
             <canvas id="gameCanvas"></canvas>
         </div>
 
-        <div class="karaoke-box" id="lyricDisplay">🌸 Nhấn nút dưới để mở nhạc và chơi game nha 🌸</div>
+        <div class="karaoke-box" id="lyricDisplay">🌸 Nhấn nút dưới để bắt đầu chơi nha 🌸</div>
         
         <button class="music-btn" id="playBtn" onclick="toggleMusic()">🌸 BẬT NHẠC & CHƠI NGAY 🌸</button>
 
@@ -189,9 +182,7 @@
         </div>
     </div>
 
-    <audio id="bgMusic" loop preload="auto" playsinline webkit-playsinline>
-        <source src="https://files.catbox.moe/6w705z.mp3" type="audio/mp3">
-    </audio>
+    <audio id="bgMusic" loop preload="auto" playsinline webkit-playsinline></audio>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -201,14 +192,78 @@
         const lyricDisplay = document.getElementById('lyricDisplay');
         const scoreDisplay = document.getElementById('score-display');
 
-        // Khởi tạo kích thước khung game (Phù hợp màn hình dọc điện thoại)
-        const gridSize = 11; // Số ô lưới (bắt buộc lẻ để tạo mê cung chuẩn)
-        const cellSize = 30; // Kích thước mỗi ô vuông (pixels)
+        // =======================================================================
+        // 🌟 CẤU HÌNH PHÁT NGẪU NHIÊN 4 BÀI HÁT KÈM LYRICS ĐỒNG BỘ CHUẨN XÁC 🌟
+        // Hãy kiểm tra tên tệp .mp3 trong thư mục của bạn trùng với giá trị 'src' nhé.
+        // =======================================================================
+        const playlist = [
+            {
+                src: "duchomaivesau.mp3",
+                lyrics: [
+                    { time: 0, text: "🎵 Đang phát: Dù Cho Mai Về Sau - Bùi Trường Linh" },
+                    { time: 6, text: "Đoạn đường dài phía trước, con đường mình sẽ bước..." },
+                    { time: 12, text: "Liệu có bao giờ anh nhìn lại và nhớ em?" },
+                    { time: 18, text: "Những kỷ niệm êm đềm, ta đã cùng bên nhau..." },
+                    { time: 24, text: "Giờ đây tan thành mây khói, bay về trời." },
+                    { time: 31, text: "Dù cho mai về sau, mình già cỗi hóa mây trời..." },
+                    { time: 38, text: "Anh vẫn muốn bên em, ngắm nhìn thế gian ngoài kia rộng lớn..." },
+                    { time: 45, text: "Dù thế giới đổi thay, lòng này chẳng hề lay chuyển..." },
+                    { time: 52, text: "Nguyện trọn kiếp yêu em, đến tận cùng của thời gian. 💕" }
+                ]
+            },
+            {
+                src: "giothi.mp3",
+                lyrics: [
+                    { time: 0, text: "🎵 Đang phát: Giờ Thì - Đen vâu ft. Lynk Lee" },
+                    { time: 5, text: "Giờ thì anh đã biết, giờ thì anh đã hay..." },
+                    { time: 11, text: "Những thói quen mỗi ngày, giờ thành mây khói bay." },
+                    { time: 17, text: "Anh gom hết chút nắng ấm, gửi vào trong gió mây..." },
+                    { time: 24, text: "Mong bình yên sẽ đến, xoa dịu đôi bờ vai gầy." },
+                    { time: 30, text: "Đi qua góc phố quen, thấy lòng mình bình yên lạ..." },
+                    { time: 37, text: "Giờ thì ta đã hiểu, tình yêu vốn chẳng cách xa. 💕" }
+                ]
+            },
+            {
+                src: "emkhongkhoc.mp3",
+                lyrics: [
+                    { time: 0, text: "🎵 Đang phát: Em Không Khóc - buitruonglinh" },
+                    { time: 6, text: "Và em nói em không khóc đâu, nhưng nước mắt cứ rơi..." },
+                    { time: 13, text: "Tình yêu chúng ta ngày nào, giờ gửi lại cho mây trời." },
+                    { time: 20, text: "Có những nỗi nhớ nghẹn ngào giấu kín sau nụ cười..." },
+                    { time: 27, text: "Dù lòng còn thương nhiều lắm, nhưng phải buông tay thôi." },
+                    { time: 34, text: "Em hứa em sẽ mạnh mẽ, đi qua giông bão cuộc đời..." },
+                    { time: 42, text: "Yêu thương gửi lại nơi ấy, chúc em bình yên một đời. 💕" }
+                ]
+            },
+            {
+                src: "duongtoichoemve.mp3",
+                lyrics: [
+                    { time: 0, text: "🎵 Đang phát: Đường Tôi Chở Em Về - buitruonglinh" },
+                    { time: 5, text: "Xe đạp lướt nhanh trên con phố dài, gió thổi tóc em bay..." },
+                    { time: 11, text: "Đường tôi chở em về, chiều hoàng hôn buông xuống dịu dàng." },
+                    { time: 17, text: "Nhìn nụ cười em vô tư, thấy lòng mình ấm áp lạ lùng..." },
+                    { time: 23, text: "Muốn ôm cả thế giới nhỏ bé, giấu vào sau tấm lưng này." },
+                    { time: 30, text: "Nguyện làm người đón đưa em qua những ngày nắng mưa..." },
+                    { time: 37, text: "Đường dài tương lai phía trước, có anh và em sánh đôi. 💕" }
+                ]
+            }
+        ];
+
+        let currentSong = null;
+
+        // Hàm chọn bài hát ngẫu nhiên
+        function pickRandomSong() {
+            const randomIndex = Math.floor(Math.random() * playlist.length);
+            currentSong = playlist[randomIndex];
+            audio.src = currentSong.src;
+        }
+
+        // --- HỆ THỐNG GAMEPLAY MÊ CUNG ---
+        const gridSize = 11; 
+        const cellSize = 30; 
         canvas.width = gridSize * cellSize;
         canvas.height = gridSize * cellSize;
 
-        // Định nghĩa bản đồ mê cung (0: Lối đi, 1: Tường đá màu xanh chủ đạo)
-        // Được thiết kế thủ công đảm bảo thuật toán đi được mượt mà
         let maze = [
             [1,1,1,1,1,1,1,1,1,1,1],
             [1,0,0,0,1,0,0,0,0,0,1],
@@ -223,10 +278,10 @@
             [1,1,1,1,1,1,1,1,1,1,1]
         ];
 
-        // Vị trí xuất phát của Hà Nguyễn
         let player = { x: 1, y: 1 };
+        let score = 0;
+        let gameFinished = false;
         
-        // Danh sách các tọa độ chứa Trái tim màu hồng
         let hearts = [
             {x: 1, y: 3, active: true}, {x: 3, y: 1, active: true},
             {x: 5, y: 1, active: true}, {x: 9, y: 1, active: true},
@@ -234,70 +289,45 @@
             {x: 5, y: 9, active: true}, {x: 9, y: 9, active: true},
             {x: 7, y: 7, active: true}, {x: 9, y: 5, active: true}
         ];
-        
-        let score = 0;
-        let gameFinished = false;
 
-        // Lời bài hát Dù Cho Mai Về Sau khớp thời gian thực
-        const lyrics = [
-            { time: 0, text: "🎵 Dù Cho Mai Về Sau - Bùi Trường Linh 🎵" },
-            { time: 10, text: "Đoạn đường dài phía trước, con đường mình sẽ bước..." },
-            { time: 15, text: "Liệu có bao giờ anh nhìn lại và nhớ em?" },
-            { time: 22, text: "Những kỷ niệm êm đềm, ta đã cùng bên nhau..." },
-            { time: 28, text: "Giờ đây tan thành mây khói, bay về trời." },
-            { time: 34, text: "Dù cho mai về sau, mình già cỗi hóa mây trời..." },
-            { time: 41, text: "Anh vẫn muốn bên em, ngắm nhìn thế gian ngoài kia rộng lớn." },
-            { time: 48, text: "Dù thế giới đổi thay, lòng này chẳng hề lay chuyển..." },
-            { time: 54, text: "Nguyện trọn kiếp yêu em, đến tận cùng của thời gian." },
-            { time: 61, text: "Yêu cục cưng Hà Nguyễn nhất trên đời! 💕" }
-        ];
-
-        // Vẽ toàn bộ trò chơi lên màn hình
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // 1. Vẽ các bức tường mê cung (Màu xanh chủ đạo tương thích bó hoa)
             for (let r = 0; r < gridSize; r++) {
                 for (let c = 0; c < gridSize; c++) {
                     if (maze[r][c] === 1) {
-                        ctx.fillStyle = '#006D77'; // Xanh đậm viền bó hoa
+                        ctx.fillStyle = '#006D77'; 
                         ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
-                        // Tạo hiệu ứng khối nhẹ cho mê cung đẹp mắt
                         ctx.strokeStyle = '#76DAE9';
                         ctx.lineWidth = 1;
                         ctx.strokeRect(c * cellSize, r * cellSize, cellSize, cellSize);
                     } else {
-                        ctx.fillStyle = '#F4FAFB'; // Lối đi màu xanh nhạt gần trắng
+                        ctx.fillStyle = '#F4FAFB'; 
                         ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
                     }
                 }
             }
 
-            // 2. Vẽ các Trái Tim Màu Hồng cần nhặt
             hearts.forEach(heart => {
                 if (heart.active) {
-                    ctx.fillStyle = '#FF5E7E'; // Hồng cánh sen ngọt ngào
+                    ctx.fillStyle = '#FF5E7E'; 
                     ctx.font = "16px Arial";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    // Vẽ biểu tượng trái tim Unicode
                     ctx.fillText("❤️", heart.x * cellSize + cellSize/2, heart.y * cellSize + cellSize/2);
                 }
             });
 
-            // 3. Vẽ nhân vật chính "Hà Nguyễn"
             ctx.beginPath();
             let radius = cellSize / 2 - 4;
             let centerX = player.x * cellSize + cellSize / 2;
             let centerY = player.y * cellSize + cellSize / 2;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.fillStyle = '#76DAE9'; // Màu xanh sáng của hoa tulip làm nền nhân vật
+            ctx.fillStyle = '#76DAE9'; 
             ctx.fill();
             ctx.lineWidth = 2;
             ctx.strokeStyle = '#00464F';
             ctx.stroke();
 
-            // Chữ viết tắt tên trên vòng tròn nhân vật cho cá tính
             ctx.fillStyle = '#006D77';
             ctx.font = "bold 10px Quicksand";
             ctx.textAlign = "center";
@@ -305,71 +335,58 @@
             ctx.fillText("HN", centerX, centerY);
         }
 
-        // Hàm xử lý di chuyển nhân vật
         function movePlayer(dx, dy) {
             if(gameFinished) return;
-            
             let newX = player.x + dx;
             let newY = player.y + dy;
-
-            // Kiểm tra xem vị trí mới có phải là đường đi hợp lệ không (không đâm vào tường 1)
             if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
                 if (maze[newY][newX] === 0) {
                     player.x = newX;
                     player.y = newY;
-                    
-                    // Kiểm tra xem có ăn được trái tim nào không
                     checkHeartCollision();
                 }
             }
             drawGame();
         }
 
-        // Kiểm tra xem Hà Nguyễn đã chạm vào trái tim chưa
         function checkHeartCollision() {
             hearts.forEach(heart => {
                 if (heart.active && heart.x === player.x && heart.y === player.y) {
                     heart.active = false;
                     score++;
                     scoreDisplay.innerText = `Trái tim: ${score}/${hearts.length}`;
-                    
-                    // Kiểm tra điều kiện thắng cuộc
                     if (score === hearts.length) {
                         gameFinished = true;
-                        lyricDisplay.innerHTML = "<span style='color:#FF5E7E; font-size:1.1rem;'>🎉 Xuất sắc quá! Hà Nguyễn đã nhặt hết tim rồi! Yêu em! 💕</span>";
+                        lyricDisplay.innerHTML = "<span style='color:#FF5E7E; font-size:1.05rem;'>🎉 Hà Nguyễn nhặt hết tim rồi! Xuất sắc quá em ơi! 💕</span>";
                     }
                 }
             });
         }
 
-        // Lắng nghe sự kiện bàn phím máy tính
         window.addEventListener('keydown', (e) => {
-            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-                e.preventDefault(); // Tránh cuộn trang khi bấm phím điều hướng
-            }
-            
+            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) e.preventDefault();
             if (e.key === 'ArrowUp') movePlayer(0, -1);
             if (e.key === 'ArrowDown') movePlayer(0, 1);
             if (e.key === 'ArrowLeft') movePlayer(-1, 0);
             if (e.key === 'ArrowRight') movePlayer(1, 0);
         });
 
-        // Khởi động hệ thống khi tải trang xong
         window.addEventListener('DOMContentLoaded', () => {
             audio.volume = 0.85;
             createPetals();
+            pickRandomSong(); 
             drawGame();
 
-            // Đồng bộ Karaoke lời bài hát
+            // Bộ xử lý Lyrics thông minh bám đuổi thời gian thực của bài hát hiện hành
             audio.addEventListener('timeupdate', () => {
-                if(gameFinished) return; // Nếu thắng game thì giữ nguyên thông báo chúc mừng
+                if(gameFinished || !currentSong) return;
                 
                 const currentTime = audio.currentTime;
-                let currentText = lyrics[0].text;
+                let currentText = currentSong.lyrics[0].text;
                 
-                for (let i = 0; i < lyrics.length; i++) {
-                    if (currentTime >= lyrics[i].time) {
-                        currentText = lyrics[i].text;
+                for (let i = 0; i < currentSong.lyrics.length; i++) {
+                    if (currentTime >= currentSong.lyrics[i].time) {
+                        currentText = currentSong.lyrics[i].text;
                     }
                 }
                 
@@ -383,10 +400,8 @@
             });
         });
 
-        // Cơ chế kích hoạt nhạc và trò chơi chống chặn trên điện thoại
         function toggleMusic() {
             if (audio.paused) {
-                audio.load();
                 audio.play().then(() => {
                     playBtn.innerText = "🎵 Tắt Nhạc Nền";
                     playBtn.style.backgroundColor = "#76DAE9";
@@ -402,7 +417,6 @@
             }
         }
 
-        // Hiệu ứng cánh hoa bay lãng mạn ở background
         function createPetals() {
             const body = document.body;
             for (let i = 0; i < 10; i++) {
